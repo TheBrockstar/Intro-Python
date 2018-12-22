@@ -14,3 +14,14 @@
 # docs for the calendar module closely.
 
 import sys
+import calendar
+import datetime
+
+if len(sys.argv) == 1:
+    currentDatetime = datetime.datetime.now()
+    calendar.TextCalendar().prmonth(currentDatetime.year, currentDatetime.month, 5)
+else:
+    if len(sys.argv) == 3:
+        calendar.TextCalendar().prmonth(int(sys.argv[2]), int(sys.argv[1]), 5)
+    else:
+        print('Invalid Arguments. First argument must be month and second must be year \n OR \nNo arguments should be provided.')
