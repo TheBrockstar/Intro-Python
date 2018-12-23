@@ -1,11 +1,12 @@
 from room import Room
 from player import Player
+import textwrap
 
 # Declare all the rooms
 
 room = {
-    'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+    'outside':  Room("Cave Entrance",
+                     "North of you, the cave mouth beckons."),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -52,7 +53,59 @@ player = Player("Chosen One", room['outside'])
 #
 # If the user enters "q", quit the game.
 
-# command = 'begin'
-# while command != 'q':
-#     print('Your current location: ' + player.room.name)
-#     command = input('Enter a command:\n')
+command = 'begin'
+while command != 'q':
+    # Title
+    print('\n--------------------------------------------------')
+    print('============== THE CAVERN OF WONDER ==============')
+    print('--------------------------------------------------')
+
+    # Location
+    print(f'\nYou find yourself at the {player.room.name}. \n')
+
+    ## Location Description
+    locationWrapper = textwrap.TextWrapper(50)
+    location = locationWrapper.wrap(player.room.description)
+    for line in location:
+        print(line)
+
+    # User Input
+    print('__________________________________________________')
+    command = input('\nEnter a command: ')
+
+    # -- Commands
+
+    ## - Movement
+
+    ### Movement Error
+    def nodirection():
+        print('\nYou are unable to see a way to move in that direction!')
+        input()
+
+    ### North
+    if command == 'n':
+        if hasattr(player.room, 'n_to'):
+            player.room = player.room.n_to
+        else:
+            nodirection()
+    
+    ### South
+    if command == 's':
+        if hasattr(player.room, 's_to'):
+            player.room = player.room.s_to
+        else:
+            nodirection()
+
+    ### East
+    if command == 'e':
+        if hasattr(player.room, 'e_to'):
+            player.room = player.room.e_to
+        else:
+            nodirection()
+
+    ### West
+    if command == 'w':
+        if hasattr(player.room, 'w_to'):
+            player.room = player.room.w_to
+        else:
+            nodirection()
