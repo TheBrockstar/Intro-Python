@@ -82,6 +82,11 @@ while cinput[0] != 'q':
         print(line)
     for item in player.room.items:
         print(player.room.items[item].name)
+    
+    ## Inventory Description
+    print('\nYou are carrying:\n')
+    for item in player.items:
+        print(item)
 
     # Command Function Container
     def command(command):
@@ -158,6 +163,8 @@ is sometimes optional.""")
         if caction == 'get':
             if cobject in player.room.items:
                 print('You got it!')
+                player.items[cobject] = player.room.items[cobject]
+                player.room.items.pop(cobject, None)
             else:
                 print('You cannot have it.')
             entocont()
