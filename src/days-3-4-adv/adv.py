@@ -82,11 +82,6 @@ while cinput[0] != 'q':
         print(line)
     for item in player.room.items:
         print(player.room.items[item].name)
-    
-    ## Inventory Description
-    print('\nYou are carrying:\n')
-    for item in player.items:
-        print(item)
 
     # Command Function Container
     def command(command):
@@ -123,6 +118,13 @@ is sometimes optional.""")
             entocont()
 
         ## - Movement
+        move_types = ('walk', 'go', 'move', 'travel', 'venture', 'proceed')
+        move_dir = {
+            'north': ('northward', 'north', 'n'),
+            'south': ('southward', 'south', 's'),
+            'east': ('eastward', 'east', 'e'),
+            'west': ('westward', 'west', 'w'),
+        }
         
         ### Movement Error
         def nodirection():
@@ -144,15 +146,17 @@ is sometimes optional.""")
             else:
                 nodirection()
             return
+
         ### East
         if caction == 'e':
             if hasattr(player.room, 'e_to'):
                 player.room = player.room.e_to
             else:
                 nodirection()
+            return
 
         ### West
-        if caction == 'w' or ((caction == 'go' or caction == 'walk') and (cobject == 'w' or cobject == 'west')):
+        if caction == 'w' or (caction in move_types and cobject in move_dir['west']):
             if hasattr(player.room, 'w_to'):
                 player.room = player.room.w_to
             else:
@@ -160,16 +164,38 @@ is sometimes optional.""")
             return
 
         ## - Items
-        if caction == 'get':
+
+        ### Get Item
+        if caction == 'get' or caction == 'take':
             if cobject in player.room.items:
-                print('You got it!')
+                player.room.items[cobject].on_take()
                 player.items[cobject] = player.room.items[cobject]
                 player.room.items.pop(cobject, None)
             else:
-                print('You cannot have it.')
+                print(f'{cobject} does not exist in this room.')
             entocont()
+            return
 
+        ### Drop Item
+        if caction == 'drop':
+            if cobject in player.items:
+                player.items[cobject].on_drop()
+                player.room.items[cobject] = player.items[cobject]
+                player.items.pop(cobject, None)
+            else:
+                print(f'{cobject} does not exist in your inventory.')
+            entocont()
+            return
+        
+        ## - Player Status
+        
+        ### Check Inventory
+        if caction in ('i', 'inventory', 'bag'):
+            player.inventory()
+            entocont()
+            return
 
+        ### Check Status
             
 
     # User Input

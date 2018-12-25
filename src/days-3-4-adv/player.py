@@ -6,3 +6,8 @@ class Player:
         self.name = name
         self.room = room
         self.items = items
+
+    def inventory(self):
+        print('\nYou are carrying:\n')
+        for item in self.items:
+            print(item)
