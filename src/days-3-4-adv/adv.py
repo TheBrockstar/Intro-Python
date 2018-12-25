@@ -18,7 +18,7 @@ command_entry_designs = {
 
 # Declare all the items
 item = {
-    'key1': Item("Rusted Iron Key", "A heavy iron key spotted with red blooms of rust.")
+    'key1': Item("Rusted Iron Key", "A heavy key of cold metal spotted with red blooms of rust.")
 }
 
 # Declare all the rooms
@@ -141,7 +141,7 @@ is sometimes optional.""")
             entocont()
 
         ### North
-        if caction == 'n':
+        if caction == 'n' or (caction in move_types and cobject in move_dir['north']):
             if hasattr(player.room, 'n_to'):
                 player.room = player.room.n_to
             else:
@@ -149,7 +149,7 @@ is sometimes optional.""")
             return
         
         ### South
-        if caction == 's':
+        if caction == 's' or (caction in move_types and cobject in move_dir['south']):
             if hasattr(player.room, 's_to'):
                 player.room = player.room.s_to
             else:
@@ -157,7 +157,7 @@ is sometimes optional.""")
             return
 
         ### East
-        if caction == 'e':
+        if caction == 'e' or (caction in move_types and cobject in move_dir['east']):
             if hasattr(player.room, 'e_to'):
                 player.room = player.room.e_to
             else:
@@ -192,12 +192,13 @@ is sometimes optional.""")
                 player.room.items[cobject] = player.items[cobject]
                 player.items.pop(cobject, None)
             else:
-                print(f'{cobject} does not exist in your inventory.')
+                print(f"{cobject} does not exist in your inventory.")
             entocont()
             return
 
         ### Check Item
-        if caction == 'check':
+        check_item_actions = ("check", "inspect", "look", "examine")
+        if caction in check_item_actions:
             if cobject in player.room.items:
                 player.room.items[cobject].on_check()
             elif cobject in player.items:
@@ -205,9 +206,7 @@ is sometimes optional.""")
             else:
                 print(f"An item must be nearby for you to inspect it!")
             entocont()
-            return
-
-                
+            return   
         
         ## - Player Status
         
@@ -220,21 +219,28 @@ is sometimes optional.""")
         ### Check Status
 
         ## - Settings
-        if caction == 'settings':      
-            csettings = input("""
+        if caction == 'settings':    
+
+        ### Main Settings Menu
+            csettings = input(
+"""
 Available Settings: 
 1. Command Entry Design
 
-""")
+"""
+)       
+        ### Command Entry Designs
             if (csettings in ('1', '1.', 'Command Entry Design')):
-                designs = input("""
+                designs = input(
+"""
 Command Entry Designs: 
 1. Plain (default)
 2. Spear
 3. Arrow
 4. Sword
 
-""")
+"""
+)
                 if (designs in ('1','1.', 'Plain')):
                     player.settings.command_entry_design = command_entry_designs['plain']
                 elif (designs in ('2','2.', 'Spear')):
@@ -247,12 +253,7 @@ Command Entry Designs:
                     print("Selected design does not exist!")
             else:
                 print(f"{csettings} setting not found.")
-                
-
-        ### Command Entry Design
- 
         
-
     # User Input
     print('__________________________________________________')
     cinput = input(f'\n{player.settings.command_entry_design}').split(" ", 1)

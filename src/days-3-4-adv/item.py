@@ -12,5 +12,4 @@ class Item:
         print(f'\nYou drop the {self.name}.')
     # Check Item (In Inventory or Current Room)
     def on_check(self):
-            print(f'\nYou insepct the {self.name} and see...\n')
-            print(self.description)
+            print(f'\nYou inspect the {self.name} and see...\n\n' + self.description + '\n')
