@@ -3,14 +3,25 @@ from player import Player
 from item import Item
 import textwrap
 
-# Declare all the items
+    # cinput = input('> Enter a Command: ').split(" ", 1) # Plain
+    # cinput = input('\n==== Enter a Command ====>>> ').split(" ", 1) # Spear
+    # cinput = input('\n>>>>--Enter-a-Command----> ').split(" ", 1) # Arrow
+    # cinput = input('\no+++|}=== Enter a Command ====> ').split(" ", 1) # Sword
 
+# System Settings
+command_entry_designs = {
+    'plain':'> Enter a Command: ',
+    'spear':'===== Enter a Command =====>>> ',
+    'arrow':'>>>>=---Enter-a-Command-----=> ',
+    'sword':'o++++|}==-Enter-a-Command-===> '
+}
+
+# Declare all the items
 item = {
     'key1': Item("Rusted Iron Key", "A heavy iron key spotted with red blooms of rust.")
 }
 
 # Declare all the rooms
-
 room = {
     'outside':  Room("Cave Entrance",
                      "North of you, the cave mouth beckons."),
@@ -31,13 +42,11 @@ earlier adventurers. The only exit is to the south."""),
 }
 
 # Link items to rooms
-
 room['outside'].items = {
         item['key1'].name: item['key1']
     }
 
 # Link rooms together
-
 room['outside'].n_to = room['foyer']
 room['foyer'].s_to = room['outside']
 room['foyer'].n_to = room['overlook']
@@ -101,7 +110,7 @@ while cinput[0] != 'q':
 
         ### Press Enter to continue...
         def entocont():
-            input('\nPress Enter to continue...')
+            input('--\nPress Enter to continue...')
 
         ## - Help
         if caction == 'h' or caction == 'help':
@@ -186,6 +195,19 @@ is sometimes optional.""")
                 print(f'{cobject} does not exist in your inventory.')
             entocont()
             return
+
+        ### Check Item
+        if caction == 'check':
+            if cobject in player.room.items:
+                player.room.items[cobject].on_check()
+            elif cobject in player.items:
+                player.items[cobject].on_check()
+            else:
+                print(f"An item must be nearby for you to inspect it!")
+            entocont()
+            return
+
+                
         
         ## - Player Status
         
@@ -196,12 +218,44 @@ is sometimes optional.""")
             return
 
         ### Check Status
-            
+
+        ## - Settings
+        if caction == 'settings':      
+            csettings = input("""
+Available Settings: 
+1. Command Entry Design
+
+""")
+            if (csettings in ('1', '1.', 'Command Entry Design')):
+                designs = input("""
+Command Entry Designs: 
+1. Plain (default)
+2. Spear
+3. Arrow
+4. Sword
+
+""")
+                if (designs in ('1','1.', 'Plain')):
+                    player.settings.command_entry_design = command_entry_designs['plain']
+                elif (designs in ('2','2.', 'Spear')):
+                    player.settings.command_entry_design = command_entry_designs['spear']
+                elif (designs in ('3','3.', 'Arrow')):
+                    player.settings.command_entry_design = command_entry_designs['arrow']
+                elif (designs in ('4','4.', 'Sword')):
+                    player.settings.command_entry_design = command_entry_designs['sword']
+                else:
+                    print("Selected design does not exist!")
+            else:
+                print(f"{csettings} setting not found.")
+                
+
+        ### Command Entry Design
+ 
+        
 
     # User Input
     print('__________________________________________________')
-    cinput = input('\nEnter a command: => ').split(" ", 1)
-
-
+    cinput = input(f'\n{player.settings.command_entry_design}').split(" ", 1)
+    
 
     command(cinput)

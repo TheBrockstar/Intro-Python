@@ -1,11 +1,16 @@
 
 class Item:
+    # Constructor
     def __init__(self, name, description):
         self.name = name
         self.description = description
+    # Get Item
     def on_take(self):
-        print(f'You pick up the {self.name} and add it to your bag.')
+        print(f'\nYou pick up the {self.name} and add it to your bag.')
+    # Drop Item
     def on_drop(self):
-        print(f'You drop the {self.name}.')
-        def print_descr(player):
-        if it
+        print(f'\nYou drop the {self.name}.')
+    # Check Item (In Inventory or Current Room)
+    def on_check(self):
+            print(f'\nYou insepct the {self.name} and see...\n')
+            print(self.description)
